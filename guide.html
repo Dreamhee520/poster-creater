@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .nav-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .nav-item a {
+            display: block;
+            padding: 12px 20px;
+            background-color: #0078d4;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .nav-item a:hover {
+            background-color: #005a9e;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <h1>项目导航</h1>
+        <ul class="nav-list">
+            <!-- 关键改动：添加了 target="_blank" 属性 -->
+            <li class="nav-item"><a href="post%20js.html" target="_blank">Excel 转 JSON 工具 (多奖次版)</a></li>
+            <li class="nav-item"><a href="post.html" target="_blank">海报生成器</a></li>
+            <li class="nav-item"><a href="users_manual.html" target="_blank">使用说明</a></li>
+        </ul>
+    </div>
+</body>
+</html>

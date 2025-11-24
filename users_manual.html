@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>获奖名单系统 - 使用说明</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#D9534F',
+                        secondary: '#2E8B57',
+                        accent: '#0275D8',
+                        light: '#F8F9FA',
+                        dark: '#343A40'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .transition-custom {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+        }
+    </style>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .feature-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+        .feature-card:hover .feature-icon {
+            transform: translateY(-5px);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #D9534F;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-light text-dark">
+
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm fixed w-full z-50 transition-custom" id="mainNav">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#hero" class="flex items-center space-x-2 text-primary">
+                <i class="fa fa-trophy text-2xl"></i>
+                <span class="text-xl font-bold">获奖名单系统</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#quick-start" class="nav-link text-dark hover:text-primary">快速开始</a>
+                <a href="#features" class="nav-link text-dark hover:text-primary">功能指南</a>
+                <a href="#design-philosophy" class="nav-link text-dark hover:text-primary">设计初衷</a>
+                <a href="#faq" class="nav-link text-dark hover:text-primary">常见问题</a>
+                <a href="#contact" class="nav-link text-dark hover:text-primary">联系我们</a>
+            </div>
+            <button class="md:hidden text-dark text-xl" id="menuToggle">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobileMenu">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="#quick-start" class="text-dark hover:text-primary py-2">快速开始</a>
+                <a href="#features" class="text-dark hover:text-primary py-2">功能指南</a>
+                <a href="#design-philosophy" class="text-dark hover:text-primary py-2">设计初衷</a>
+                <a href="#faq" class="text-dark hover:text-primary py-2">常见问题</a>
+                <a href="#contact" class="text-dark hover:text-primary py-2">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section id="hero" class="pt-28 pb-20 bg-gradient-to-br from-primary/10 to-light">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-dark mb-6 leading-tight text-shadow">
+                    获奖名单系统<br>使用说明
+                </h1>
+                <p class="text-lg text-dark/80 mb-8">
+                    本指南将帮助您快速上手使用我们的获奖名单管理与展示系统，
+                    轻松实现数据导入、样式定制和成果展示。
+                </p>
+                <a href="#quick-start" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 shadow-sm transition-custom">
+                    开始探索 <i class="fa fa-arrow-down ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 快速开始 -->
+    <section id="quick-start" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">
+                    <span class="inline-block border-b-4 border-primary pb-2">快速开始</span>
+                </h2>
+                
+                <div class="space-y-12">
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="md:w-1/3">
+                            <div class="bg-primary/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto">
+                                <i class="fa fa-file-excel-o text-primary text-4xl"></i>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-xl font-semibold mb-3">步骤 1: 准备 Excel 数据</h3>
+                            <p class="text-dark/70">
+                                创建一个 Excel 文件，包含至少 <strong>姓名</strong>、<strong>学院</strong> 和 <strong>作品名称</strong> 三列。
+                                您还可以添加第四列 <strong>奖次</strong> 来区分不同奖项。第一行请作为表头。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row-reverse gap-6 items-center">
+                        <div class="md:w-1/3">
+                            <div class="bg-secondary/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto">
+                                <i class="fa fa-upload text-secondary text-4xl"></i>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-xl font-semibold mb-3">步骤 2: 使用 Excel 转 JSON 工具</h3>
+                            <p class="text-dark/70">
+                                打开 <code class="bg-light px-2 py-1 rounded">excel_to_json.html</code> 文件，上传您的 Excel 文件。
+                                在列映射界面，将 Excel 列与系统字段对应，然后点击"生成 JSON"并下载。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="md:w-1/3">
+                            <div class="bg-accent/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto">
+                                <i class="fa fa-table text-accent text-4xl"></i>
+                            </div>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h3 class="text-xl font-semibold mb-3">步骤 3: 在主系统中加载数据</h3>
+                            <p class="text-dark/70">
+                                打开系统主页面 <code class="bg-light px-2 py-1 rounded">index.html</code>，点击"读取数据"按钮，
+                                选择您刚刚生成的 JSON 文件。系统将自动加载并展示数据。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能指南 -->
+    <section id="features" class="py-16 bg-light/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">
+                <span class="inline-block border-b-4 border-primary pb-2">功能指南</span>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 功能卡片 1 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-primary text-3xl mb-4">
+                        <i class="fa fa-magic feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Excel 数据导入</h3>
+                    <p class="text-dark/70 mb-4">
+                        通过专用的 Excel 转 JSON 工具，轻松将批量数据导入系统，支持多奖次自动分组。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 支持 .xlsx 和 .xls 格式</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 智能列映射</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 数据格式验证</li>
+                    </ul>
+                </div>
+
+                <!-- 功能卡片 2 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-accent text-3xl mb-4">
+                        <i class="fa fa-sliders feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">高度样式定制</h3>
+                    <p class="text-dark/70 mb-4">
+                        自定义表格的每一个细节，包括字体、颜色、行高、列宽等，打造专属于您的展示风格。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 独立控制表头、正文、奖次字号</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 自定义颜色方案</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 实时预览调整效果</li>
+                    </ul>
+                </div>
+
+                <!-- 功能卡片 3 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-secondary text-3xl mb-4">
+                        <i class="fa fa-database feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">数据本地存储</h3>
+                    <p class="text-dark/70 mb-4">
+                        所有数据和样式设置均保存在浏览器本地，无需服务器，确保数据隐私和访问速度。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 一键保存当前状态</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 支持导出备份</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 离线可用</li>
+                    </ul>
+                </div>
+
+                <!-- 功能卡片 4 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-primary text-3xl mb-4">
+                        <i class="fa fa-plus-circle feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">在线编辑功能</h3>
+                    <p class="text-dark/70 mb-4">
+                        直接在主界面上添加、删除或修改获奖记录，操作直观简单，实时生效。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 点击"添加获奖记录"</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 选择对应奖项</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 数据自动更新</li>
+                    </ul>
+                </div>
+
+                <!-- 功能卡片 5 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-accent text-3xl mb-4">
+                        <i class="fa fa-mobile feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">响应式设计</h3>
+                    <p class="text-dark/70 mb-4">
+                        无论是在电脑、平板还是手机上，系统都能自动适配屏幕尺寸，提供最佳的浏览体验。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 桌面端完整功能</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 移动端优化布局</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 触控友好操作</li>
+                    </ul>
+                </div>
+
+                <!-- 功能卡片 6 -->
+                <div class="bg-white rounded-xl shadow-sm p-6 feature-card hover:shadow-md transition-custom">
+                    <div class="text-secondary text-3xl mb-4">
+                        <i class="fa fa-question-circle feature-icon"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">便捷的帮助系统</h3>
+                    <p class="text-dark/70 mb-4">
+                        内置详细的使用说明和常见问题解答，帮助您快速解决使用过程中遇到的任何问题。
+                    </p>
+                    <ul class="space-y-2 text-dark/70">
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 详细的操作步骤</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 常见问题解答</li>
+                        <li><i class="fa fa-check-circle text-secondary mr-2"></i> 联系支持渠道</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 设计初衷 -->
+    <section id="design-philosophy" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-12">
+                    <span class="inline-block border-b-4 border-primary pb-2">设计初衷</span>
+                </h2>
+                
+                <div class="bg-light rounded-xl p-8 shadow-sm">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center">
+                            <i class="fa fa-lightbulb-o text-primary text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-semibold ml-4">为什么创建这个系统？</h3>
+                    </div>
+                    
+                    <div class="prose max-w-none text-dark/80">
+                        <p class="mb-4">
+                            这个项目是基于纯 H5 实现的，旨在提供一个方便实用的获奖名单展示解决方案。
+                        </p>
+                        <p class="mb-4">
+                            最初设计这个软件的灵感来源于一个实际需求：我需要为学校制作一份获奖名单海报，
+                            但在网上翻遍了各种海报设计软件，要么功能复杂难以操作，要么不符合我的需求。
+                            手动制作海报又耗时费力，效率低下。
+                        </p>
+                        <p class="mb-4">
+                            于是，我决定开发一个专门用于展示获奖名单的海报生成器，既能够快速导入数据，
+                            又能够灵活定制样式，让用户能够轻松创建专业美观的获奖名单展示页面。
+                        </p>
+                        <p>
+                            关于未来更新：由于这是一个个人项目，未来大概率不会进行大规模更新。
+                            不过，这个系统的设计具有很好的扩展性，如果有开发者愿意贡献更多的模板或功能，
+                            可以直接进行添加和扩展。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="faq" class="py-16 bg-light/50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">
+                <span class="inline-block border-b-4 border-primary pb-2">常见问题</span>
+            </h2>
+
+            <div class="max-w-3xl mx-auto space-y-6">
+                <div class="bg-white rounded-lg p-6 hover:shadow-md transition-custom">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fa fa-question-circle text-primary mr-3"></i>
+                        导入 Excel 时，列映射是什么意思？
+                    </h3>
+                    <p class="text-dark/70">
+                        列映射是指将您 Excel 文件中的列（例如 "学生姓名"）与系统期望的字段（例如 "姓名"）进行关联。
+                        这一步确保系统能正确识别和读取您的数据。如果您的 Excel 表头是标准的 "姓名", "学院", "作品名称", "奖次"，
+                        系统通常能自动匹配。
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-lg p-6 hover:shadow-md transition-custom">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fa fa-question-circle text-primary mr-3"></i>
+                        为什么我导入后看不到数据？
+                    </h3>
+                    <p class="text-dark/70">
+                        请检查以下几点：
+                        <ol class="list-decimal pl-5 mt-2 space-y-1">
+                            <li>确保您下载的是生成的 <code class="bg-light px-1 rounded">.json</code> 文件，而不是原始的 <code class="bg-light px-1 rounded">.xlsx</code> 文件。</li>
+                            <li>在主系统中，点击"读取数据"后，选择的是正确的 JSON 文件。</li>
+                            <li>检查您的 Excel 文件格式是否正确，特别是表头是否存在。</li>
+                        </ol>
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-lg p-6 hover:shadow-md transition-custom">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fa fa-question-circle text-primary mr-3"></i>
+                        我可以在手机上使用这个系统吗？
+                    </h3>
+                    <p class="text-dark/70">
+                        可以。系统采用响应式设计，在手机、平板等移动设备上都能良好工作。
+                        不过，由于屏幕尺寸限制，某些操作（如精细调整样式）在桌面端会更加方便。
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-lg p-6 hover:shadow-md transition-custom">
+                    <h3 class="text-lg font-semibold mb-2 flex items-center">
+                        <i class="fa fa-question-circle text-primary mr-3"></i>
+                        我的数据保存在哪里？安全吗？
+                    </h3>
+                    <p class="text-dark/70">
+                        所有数据都保存在您本地浏览器的 <code class="bg-light px-1 rounded">localStorage</code> 中。
+                        这意味着：
+                        <ol class="list-decimal pl-5 mt-2 space-y-1">
+                            <li>数据完全保存在您自己的设备上，非常安全。</li>
+                            <li>清除浏览器缓存或更换浏览器/设备后，数据会丢失。</li>
+                            <li>建议定期使用"保存数据"功能导出 JSON 文件进行备份。</li>
+                        </ol>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-16 bg-primary/5">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">
+                <span class="inline-block border-b-4 border-primary pb-2">联系我们</span>
+            </h2>
+
+            <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm p-8">
+                <div class="text-center mb-8">
+                    <p class="text-dark/70">
+                        如果您在使用过程中遇到任何问题，或者有任何建议和反馈，
+                        欢迎通过以下方式联系我们。
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-12">
+                    <a href="mailto:703241641@qq.com" class="flex flex-col items-center text-accent hover:text-primary transition-custom">
+                        <i class="fa fa-envelope text-3xl mb-2"></i>
+                        <span>发送邮件</span>
+                    </a>
+                    <a href="https://github.com/Dreamhee520?tab=repositories" target="_blank" class="flex flex-col items-center text-accent hover:text-primary transition-custom">
+                        <i class="fa fa-github text-3xl mb-2"></i>
+                        <span>访问 GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <a href="#hero" class="flex items-center space-x-2">
+                        <i class="fa fa-trophy text-primary text-2xl"></i>
+                        <span class="text-xl font-bold">获奖名单系统</span>
+                    </a>
+                    <p class="text-white/60 mt-2">© 2025 DreamHee. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="https://github.com/Dreamhee520?tab=repositories" target="_blank" class="text-white/60 hover:text-primary transition-custom">
+                        <i class="fa fa-github text-xl"></i>
+                    </a>
+                    <a href="mailto:703241641@qq.com" class="text-white/60 hover:text-primary transition-custom">
+                        <i class="fa fa-envelope text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const mainNav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                mainNav.classList.add('py-2', 'shadow');
+                mainNav.classList.remove('py-3');
+            } else {
+                mainNav.classList.add('py-3');
+                mainNav.classList.remove('py-2', 'shadow');
+            }
+        });
+
+        // 关闭移动菜单（当点击菜单项时）
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

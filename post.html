@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>海报生成器</title>
+    <style type="text/css">
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "FZKai", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-image: url(//statics.xiumi.us/xmi/ua/19KxR/i/693ee9a3d6054ed2459f7eed1c563702-sz_490395.png?x-oss-process=style/xmwebp);
+            background-position: 50% 0;
+            background-repeat: repeat-y;
+            background-size: 100%;
+            color: #FFB886;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* 标题样式 */
+        .activity-title {
+            text-align: center;
+            color: #A91F24;
+            font-size: 24px;
+            letter-spacing: 5px;
+            margin: 30px 0;
+            padding: 0 25px;
+            background-image: url(//statics.xiumi.us/xmi/ua/19KxR/i/aadd3e3a5f1bd9b09932a3a42d7f7e94-sz_5654.png?x-oss-process=style/xmwebp);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            display: inline-block;
+        }
+        /* 控件容器统一样式 */
+        .controls-container {
+            width: 90%;
+            max-width: 900px;
+            background-color: rgba(138, 8, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 150px;
+        }
+        .control-label {
+            color: #FFD2AA;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .control-slider {
+            width: 100%;
+            vertical-align: middle;
+        }
+        .control-value {
+            color: #FFD2AA;
+            font-size: 12px;
+            text-align: center;
+        }
+        .color-picker, .font-selector {
+            width: 100%;
+            height: 30px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            align-self: center;
+            cursor: pointer;
+            background-color: #fff;
+        }
+        /* 表格容器和表格样式 */
+        .table-wrapper {
+            width: 80%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin: 20px 0;
+            border: 3px solid gold;
+        }
+        .award-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .award-table th, .award-table td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid #8A0800;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .award-table th {
+            background: linear-gradient(to right, #AA0C01, #8A0800);
+            color: #FFD2AA;
+            font-size: 16px; /* 初始值 */
+            letter-spacing: 0;
+        }
+        .award-table td {
+            font-size: 18px;
+            line-height: 1.2;
+        }
+        .award-section {
+            background: linear-gradient(to right, #AA0C01, #8A0800);
+            color: #FFD2AA;
+            font-size: 18px; /* 初始值 */
+            font-weight: bold;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .award-table tbody tr:nth-child(even) {
+            background-color: #96020D;
+        }
+        .award-table tbody tr:nth-child(odd) {
+            background-color: #AA0C01;
+        }
+        /* 适配移动端 */
+        @media (max-width: 768px) {
+            .activity-title { font-size: 18px; letter-spacing: 3px; }
+            .award-table th, .award-table td { padding: 8px 5px; font-size: 14px; }
+            .award-section { font-size: 16px; }
+            .controls-container { width: 95%; }
+            .table-wrapper { width: 95% !important; }
+        }
+        /* 按钮样式 */
+        .action-button {
+            background-color: #AA0C01;
+            color: #FFD2AA;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .action-button:hover {
+            filter: brightness(1.2);
+        }
+        .action-button.green {
+            background-color: #2E8B57; /* SeaGreen */
+        }
+        .action-button-group {
+            margin-top: 10px;
+        }
+        /* 隐藏文件输入框 */
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="activity-title">海报生成器</h1>
+
+    <!-- 表格宽度、行高、字体 控件组合 -->
+    <div class="controls-container">
+        <div class="control-group">
+            <span class="control-label">表格宽度</span>
+            <input type="range" id="tableWidthSlider" class="control-slider" min="50" max="100" value="80">
+            <span class="control-value" id="tableWidthValue">80%</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">表格行高</span>
+            <input type="range" id="rowHeightSlider" class="control-slider" min="4" max="30" value="10">
+            <span class="control-value" id="rowHeightValue">10px</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">正文字体</span>
+            <select id="fontFamilySelector" class="font-selector">
+                <option value="'FZKai', 'STKaiti', serif">楷体</option>
+                <option value="'Microsoft YaHei', sans-serif">微软雅黑</option>
+                <option value="'SimSun', serif">宋体</option>
+                <option value="'SimHei', sans-serif">黑体</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Georgia', serif">Georgia</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 列宽调整滑块 -->
+    <div class="controls-container">
+        <div class="control-group">
+            <span class="control-label">姓名列宽</span>
+            <input type="range" id="nameSlider" class="control-slider" min="5" max="50" value="20">
+            <span class="control-value" id="nameValue">20%</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">学院列宽</span>
+            <input type="range" id="collegeSlider" class="control-slider" min="10" max="60" value="25">
+            <span class="control-value" id="collegeValue">25%</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">作品名列宽</span>
+            <input type="range" id="workSlider" class="control-slider" min="20" max="80" value="55">
+            <span class="control-value" id="workValue">55%</span>
+        </div>
+    </div>
+
+    <!-- 样式控制滑块和颜色选择器 -->
+    <div class="controls-container">
+        <div class="control-group">
+            <span class="control-label">正文字号</span>
+            <input type="range" id="contentSizeSlider" class="control-slider" min="12" max="24" value="16">
+            <span class="control-value" id="contentSizeValue">16px</span>
+        </div>
+        <!-- 新增：表头字号控制 -->
+        <div class="control-group">
+            <span class="control-label">表头字号</span>
+            <input type="range" id="headerSizeSlider" class="control-slider" min="14" max="26" value="18">
+            <span class="control-value" id="headerSizeValue">18px</span>
+        </div>
+        <!-- 新增：奖次字号控制 -->
+        <div class="control-group">
+            <span class="control-label">奖次字号</span>
+            <input type="range" id="awardSizeSlider" class="control-slider" min="14" max="26" value="18">
+            <span class="control-value" id="awardSizeValue">18px</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">边框大小</span>
+            <input type="range" id="borderSizeSlider" class="control-slider" min="1" max="10" value="3">
+            <span class="control-value" id="borderSizeValue">3px</span>
+        </div>
+        <div class="control-group">
+            <span class="control-label">边框颜色</span>
+            <input type="color" id="borderColorPicker" class="color-picker" value="#FFD700">
+        </div>
+        <div class="control-group">
+            <span class="control-label">正文颜色</span>
+            <input type="color" id="contentColorPicker" class="color-picker" value="#FFB886">
+        </div>
+    </div>
+
+    <!-- 表格操作按钮 -->
+    <div class="action-button-group">
+        <button class="action-button" id="addRowBtn">添加获奖记录</button>
+        <select id="awardTypeSelect" class="action-button" style="padding: 7px;">
+            <option value="一等奖">一等奖</option>
+            <option value="二等奖">二等奖</option>
+            <option value="三等奖">三等奖</option>
+            <option value="优秀奖">优秀奖</option>
+        </select>
+        <button class="action-button" id="clearBtn">清空所有记录</button>
+        <button class="action-button green" id="saveBtn">保存数据</button>
+        <button class="action-button green" id="loadBtn">读取数据</button>
+        <input type="file" id="fileInput" accept=".json">
+    </div>
+
+    <!-- 表格容器 -->
+    <div class="table-wrapper" id="tableWrapper">
+        <table class="award-table" id="awardTable">
+            <thead>
+                <tr>
+                    <th>姓名</th><th>学院</th><th>作品名称</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="3" class="award-section">一等奖</td></tr>
+                <tr><td contenteditable="true">张三</td><td contenteditable="true">计算机学院</td><td contenteditable="true">《作品A》</td></tr>
+                <tr><td colspan="3" class="award-section">二等奖</td></tr>
+                <tr><td contenteditable="true">李四</td><td contenteditable="true">文学院</td><td contenteditable="true">《作品B》</td></tr>
+                <tr><td colspan="3" class="award-section">三等奖</td></tr>
+                <tr><td contenteditable="true">王五</td><td contenteditable="true">工学院</td><td contenteditable="true">《作品C》</td></tr>
+                <tr><td colspan="3" class="award-section">优秀奖</td></tr>
+                <tr><td contenteditable="true">赵六</td><td contenteditable="true">法学院</td><td contenteditable="true">《作品D》</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <div style="margin-top: 40px; font-size: 12px; opacity: 0.7; text-align: center;">
+        ©dreamhee copyright
+    </div>
+
+    <!-- JavaScript 代码 -->
+    <script type="text/javascript">
+        // 获取DOM元素
+        const tableWrapper = document.getElementById('tableWrapper');
+        const awardTable = document.getElementById('awardTable');
+        const awardTableBody = awardTable.querySelector('tbody');
+
+        const tableWidthSlider = document.getElementById('tableWidthSlider');
+        const tableWidthValue = document.getElementById('tableWidthValue');
+        
+        const nameSlider = document.getElementById('nameSlider');
+        const collegeSlider = document.getElementById('collegeSlider');
+        const workSlider = document.getElementById('workSlider');
+        const nameValue = document.getElementById('nameValue');
+        const collegeValue = document.getElementById('collegeValue');
+        const workValue = document.getElementById('workValue');
+
+        const rowHeightSlider = document.getElementById('rowHeightSlider');
+        const contentSizeSlider = document.getElementById('contentSizeSlider');
+        const borderSizeSlider = document.getElementById('borderSizeSlider');
+        const borderColorPicker = document.getElementById('borderColorPicker');
+        const contentColorPicker = document.getElementById('contentColorPicker');
+        const fontFamilySelector = document.getElementById('fontFamilySelector');
+        const rowHeightValue = document.getElementById('rowHeightValue');
+        const contentSizeValue = document.getElementById('contentSizeValue');
+        const borderSizeValue = document.getElementById('borderSizeValue');
+
+        // 新增：获取表头和奖次字号滑块
+        const headerSizeSlider = document.getElementById('headerSizeSlider');
+        const awardSizeSlider = document.getElementById('awardSizeSlider');
+        const headerSizeValue = document.getElementById('headerSizeValue');
+        const awardSizeValue = document.getElementById('awardSizeValue');
+
+        const addRowBtn = document.getElementById('addRowBtn');
+        const awardTypeSelect = document.getElementById('awardTypeSelect');
+        const clearBtn = document.getElementById('clearBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const loadBtn = document.getElementById('loadBtn');
+        const fileInput = document.getElementById('fileInput');
+
+        // --- 核心逻辑：列宽联动 ---
+        let isUpdatingColumns = false;
+        function updateColumnWidths() {
+            if (isUpdatingColumns) return;
+            const nameWidth = parseFloat(nameSlider.value);
+            const collegeWidth = parseFloat(collegeSlider.value);
+            const workWidth = parseFloat(workSlider.value);
+            nameValue.textContent = `${nameWidth}%`;
+            collegeValue.textContent = `${collegeWidth}%`;
+            workValue.textContent = `${workWidth}%`;
+            awardTable.querySelectorAll('th:nth-child(1), td:nth-child(1)').forEach(col => col.style.width = `${nameWidth}%`);
+            awardTable.querySelectorAll('th:nth-child(2), td:nth-child(2)').forEach(col => col.style.width = `${collegeWidth}%`);
+            awardTable.querySelectorAll('th:nth-child(3), td:nth-child(3)').forEach(col => col.style.width = `${workWidth}%`);
+        }
+        
+        nameSlider.addEventListener('input', function() {
+            isUpdatingColumns = true;
+            const nameWidth = parseFloat(nameSlider.value);
+            const remainingWidth = 100 - nameWidth;
+            const currentCollegeWidth = parseFloat(collegeSlider.value);
+            const currentWorkWidth = parseFloat(workSlider.value);
+            const totalCurrentSecondaryWidth = currentCollegeWidth + currentWorkWidth;
+            let newCollegeWidth, newWorkWidth;
+            if (totalCurrentSecondaryWidth > 0) {
+                newCollegeWidth = (currentCollegeWidth / totalCurrentSecondaryWidth) * remainingWidth;
+                newWorkWidth = (currentWorkWidth / totalCurrentSecondaryWidth) * remainingWidth;
+            } else {
+                newCollegeWidth = remainingWidth * 0.3;
+                newWorkWidth = remainingWidth * 0.7;
+            }
+            collegeSlider.value = newCollegeWidth;
+            workSlider.value = newWorkWidth;
+            updateColumnWidths(); 
+            isUpdatingColumns = false;
+        });
+        collegeSlider.addEventListener('input', updateColumnWidths);
+        workSlider.addEventListener('input', updateColumnWidths);
+
+        // 更新表格整体宽度
+        function updateTableWidth() {
+            const width = tableWidthSlider.value + '%';
+            tableWidthValue.textContent = width;
+            tableWrapper.style.width = width;
+        }
+        tableWidthSlider.addEventListener('input', updateTableWidth);
+
+        // 更新表格行高
+        function updateRowHeight() {
+            const height = rowHeightSlider.value + 'px';
+            rowHeightValue.textContent = height;
+            awardTable.querySelectorAll('th, td').forEach(cell => {
+                cell.style.paddingTop = height;
+                cell.style.paddingBottom = height;
+            });
+        }
+        rowHeightSlider.addEventListener('input', updateRowHeight);
+        
+        // 更新正文样式 (整合字号、颜色、字体)
+        function updateContentStyle() {
+            const size = contentSizeSlider.value + 'px';
+            const color = contentColorPicker.value;
+            const fontFamily = fontFamilySelector.value;
+            contentSizeValue.textContent = size;
+            const textCells = awardTable.querySelectorAll('td:not(.award-section)');
+            textCells.forEach(cell => {
+                cell.style.fontSize = size;
+                cell.style.color = color;
+                cell.style.fontFamily = fontFamily;
+            });
+        }
+        contentSizeSlider.addEventListener('input', updateContentStyle);
+        contentColorPicker.addEventListener('input', updateContentStyle);
+        fontFamilySelector.addEventListener('change', updateContentStyle);
+
+        // 新增：更新表头和奖次字号
+        function updateHeaderAndAwardStyle() {
+            const headerSize = headerSizeSlider.value + 'px';
+            const awardSize = awardSizeSlider.value + 'px';
+            headerSizeValue.textContent = headerSize;
+            awardSizeValue.textContent = awardSize;
+
+            // 更新表头字号
+            awardTable.querySelectorAll('th').forEach(th => {
+                th.style.fontSize = headerSize;
+            });
+
+            // 更新奖次字号
+            awardTable.querySelectorAll('.award-section').forEach(section => {
+                section.style.fontSize = awardSize;
+            });
+        }
+        headerSizeSlider.addEventListener('input', updateHeaderAndAwardStyle);
+        awardSizeSlider.addEventListener('input', updateHeaderAndAwardStyle);
+
+        // 更新边框样式
+        function updateBorderStyle() {
+            const size = borderSizeSlider.value + 'px';
+            const color = borderColorPicker.value;
+            borderSizeValue.textContent = size;
+            tableWrapper.style.border = `${size} solid ${color}`;
+        }
+        borderSizeSlider.addEventListener('input', updateBorderStyle);
+        borderColorPicker.addEventListener('input', updateBorderStyle);
+        
+        // 添加获奖记录
+        addRowBtn.addEventListener('click', function() {
+            const selectedAward = awardTypeSelect.value;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `<td contenteditable="true">demo</td><td contenteditable="true">demo</td><td contenteditable="true">《demo》</td>`;
+            const awardSections = awardTableBody.querySelectorAll('.award-section');
+            let targetSectionRow = null;
+            awardSections.forEach(section => {
+                if (section.textContent.trim() === selectedAward) {
+                    targetSectionRow = section.parentElement;
+                }
+            });
+            if (targetSectionRow) {
+                let nextSibling = targetSectionRow.nextElementSibling;
+                while (nextSibling && !nextSibling.querySelector('.award-section')) nextSibling = nextSibling.nextElementSibling;
+                nextSibling ? awardTableBody.insertBefore(newRow, nextSibling) : awardTableBody.appendChild(newRow);
+            } else {
+                awardTableBody.appendChild(newRow);
+            }
+            updateContentStyle(); // 对新行应用样式
+        });
+
+        // 清空所有记录
+        clearBtn.addEventListener('click', function() {
+            if(confirm('确定要清空所有记录吗？此操作不可恢复。')) {
+                awardTableBody.innerHTML = `
+                    <tr><td colspan="3" class="award-section">一等奖</td></tr>
+                    <tr><td colspan="3" class="award-section">二等奖</td></tr>
+                    <tr><td colspan="3" class="award-section">三等奖</td></tr>
+                    <tr><td colspan="3" class="award-section">优秀奖</td></tr>
+                `;
+            }
+        });
+
+        // 保存数据
+        saveBtn.addEventListener('click', function() {
+            const tableData = [];
+            awardTableBody.querySelectorAll('tr').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length === 1 && cells[0].classList.contains('award-section')) {
+                    tableData.push({ type: 'section', text: cells[0].textContent.trim() });
+                } else {
+                    const values = Array.from(cells).map(cell => cell.textContent.trim());
+                    tableData.push({ type: 'data', values: values });
+                }
+            });
+            const styleConfig = {
+                tableWidth: tableWidthSlider.value,
+                nameWidth: nameSlider.value,
+                collegeWidth: collegeSlider.value,
+                workWidth: workSlider.value,
+                rowHeight: rowHeightSlider.value,
+                contentSize: contentSizeSlider.value,
+                headerSize: headerSizeSlider.value, // 新增
+                awardSize: awardSizeSlider.value,   // 新增
+                contentColor: contentColorPicker.value,
+                fontFamily: fontFamilySelector.value,
+                borderSize: borderSizeSlider.value,
+                borderColor: borderColorPicker.value
+            };
+            const saveData = { tableData, styleConfig, saveTime: new Date().toLocaleString() };
+            const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = '获奖名单数据.json'; a.click();
+            URL.revokeObjectURL(url);
+            alert('数据已成功保存！');
+        });
+
+        // 读取数据
+        loadBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const { tableData, styleConfig } = JSON.parse(e.target.result);
+                    awardTableBody.innerHTML = '';
+                    tableData.forEach(item => {
+                        const row = document.createElement('tr');
+                        if (item.type === 'section') {
+                            row.innerHTML = `<td colspan="3" class="award-section">${item.text}</td>`;
+                        } else if (item.type === 'data') {
+                             row.innerHTML = item.values.map(v => `<td contenteditable="true">${v}</td>`).join('');
+                        }
+                        awardTableBody.appendChild(row);
+                    });
+                    isUpdatingColumns = true;
+                    tableWidthSlider.value = styleConfig.tableWidth;
+                    nameSlider.value = styleConfig.nameWidth;
+                    collegeSlider.value = styleConfig.collegeWidth;
+                    workSlider.value = styleConfig.workWidth;
+                    rowHeightSlider.value = styleConfig.rowHeight;
+                    contentSizeSlider.value = styleConfig.contentSize;
+                    if (styleConfig.headerSize) headerSizeSlider.value = styleConfig.headerSize; // 新增
+                    if (styleConfig.awardSize) awardSizeSlider.value = styleConfig.awardSize; // 新增
+                    contentColorPicker.value = styleConfig.contentColor;
+                    if (styleConfig.fontFamily) fontFamilySelector.value = styleConfig.fontFamily;
+                    borderSizeSlider.value = styleConfig.borderSize;
+                    borderColorPicker.value = styleConfig.borderColor;
+                    isUpdatingColumns = false;
+                    updateTableWidth();
+                    updateColumnWidths();
+                    updateRowHeight();
+                    updateContentStyle();
+                    updateHeaderAndAwardStyle(); // 新增
+                    updateBorderStyle();
+                    alert('数据读取成功！');
+                } catch (error) {
+                    console.error('数据读取失败：', error);
+                    alert('数据格式错误，请选择正确的JSON文件！');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // 初始化
+        window.addEventListener('load', function() {
+            updateTableWidth();
+            updateColumnWidths();
+            updateRowHeight();
+            updateContentStyle();
+            updateHeaderAndAwardStyle(); // 新增
+            updateBorderStyle();
+        });
+    </script>
+</body>
+</html>
